@@ -111,5 +111,5 @@ ws://localhost:8080/ws-stock
 
 ## **Contact / Author**
 
-* Author: Your Name
-* GitHub: [https://github.com/yourusername/quicktrade](https://github.com/yourusername/quicktrade)
+* Author: Braj Bhushan kumar
+* GitHub: [https://github.com/yourusername/quicktrade](https://github.com/brajthetdh1/QuickTrade)
