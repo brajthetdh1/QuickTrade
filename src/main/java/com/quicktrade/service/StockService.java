@@ -2,6 +2,7 @@ package com.quicktrade.service;
 
 import com.quicktrade.dto.Stock;
 import com.quicktrade.dto.UserSubscription;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,9 @@ public class StockService {
             "MSFT", 300.0,
             "TSLA", 800.0
     );
+
+    @Autowired
+    private SubscriptionService subscriptionService;
 
     // Per-user subscriptions
     private final Map<String, UserSubscription> userSubscriptions = new HashMap<>();
@@ -87,6 +91,18 @@ public class StockService {
                         "ALERT for " + userId + ": " + symbol + " -> " + price);
             }
         });
+
+
+        subscriptionService.getAllSubscriptions().forEach((userId, sub) -> {
+            if (sub.getSymbols().contains(symbol)) {
+                Double userThreshold = sub.getThresholds().get(symbol);
+                if (userThreshold != null && price > userThreshold) {
+                    messagingTemplate.convertAndSend("/topic/alerts/" + userId,
+                            "ALERT for " + userId + ": " + symbol + " crossed your threshold " + userThreshold + " -> " + price);
+                }
+            }
+        });
+
     }
 
     /** Record latest N prices per stock */
